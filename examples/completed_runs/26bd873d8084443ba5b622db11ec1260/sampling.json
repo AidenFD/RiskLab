@@ -1,0 +1,11 @@
+{
+  "generator": "PCG64",
+  "seed": 42,
+  "batch_size": 512,
+  "numpy": "2.5.4",
+  "python": "3.12.14",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.39",
+  "algorithm": "batch-major, step-major standard_normal @ eigh_factor.T",
+  "preview_rule": "evenly spaced path IDs; no RNG consumption",
+  "repeatability": "same NumPy build, hardware environment, algorithm, batch size and inputs"
+}

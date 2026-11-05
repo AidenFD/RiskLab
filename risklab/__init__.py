@@ -1,2 +1,2 @@
-"""RiskLab numerical foundation; desktop release in progress."""
-__version__ = '0.1.0'
+"""RiskLab: auditable fixed-holdings Monte Carlo portfolio risk research."""
+__version__ = '1.0.0'

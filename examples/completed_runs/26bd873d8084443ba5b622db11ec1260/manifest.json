@@ -1,0 +1,36 @@
+{
+  "schema_version": 2,
+  "run_id": "26bd873d8084443ba5b622db11ec1260",
+  "created_utc": "2026-11-05T13:21:21.474362+00:00",
+  "status": "COMPLETED",
+  "app_version": "1.0.0",
+  "python": "3.12.14",
+  "numpy": "2.5.4",
+  "scenario_name": "Correlated three-asset synthetic history",
+  "source_kind": "SYNTHETIC",
+  "input_hash": "12d9d7c065b5f8159d724725feff56588128319f02c2b97fe56f8c305b907a74",
+  "config_hash": "6f48e7cbde485cb18eaf97e4b08d62771add24b79504738d9ce361898380ab24",
+  "n_paths": 10000,
+  "n_steps": 252,
+  "seed": 42,
+  "drift_mode": "ZERO_LOG_MEAN",
+  "symbols": [
+    "SYN-A",
+    "SYN-B",
+    "SYN-C"
+  ],
+  "diagnostics_status": "NO INSTABILITY FLAG",
+  "files": {
+    "comparisons.json": "b4ff081428591a497863b9b269632ad1ba6edb6efd37afa3751f26ab2bd6da69",
+    "config.json": "43e4dcd776b9b3f0a6e584b63e86361e9c478837d204d2358cd75a381a966eba",
+    "diagnostics.json": "b2a0b776981edfabe87efb721b3314fb8f053008f35774bf6815d1b32ad80618",
+    "history.csv": "f79cda1f9935181514e48e796a3dadf442689f1ddc42b4ba25e494cfbdaded75",
+    "history.meta.json": "ff67f55e413a531dd737f0bcd6840550b62a89ec444c3bd204b2b19ddff47bd1",
+    "model_parameters.json": "6b5dea6a7fed9d85947aa15bb27fdfe239e3ea1e6dc5ada7d804d8c8a870737c",
+    "outcomes.npz": "f1da1d9dec531db3bf58707d895336217f84e56004d57c004f497156b95dfe2d",
+    "sampling.json": "0c71da4298d5f5821d9ba731533f34dcdeccff0fc33ca1c96bad677234ade89a",
+    "scenario.json": "16f399daf2b0dcd1af449b8c7401f2ad9f4312f05715cd63324ca837d76de5fe",
+    "summary.json": "32f5b6fab605149835865d4b8ad5abe39a3bfeff151676cee2a27ed2bc04587f",
+    "terminal_outcomes.csv": "839015b745ae56c34422b82d222d8a5cb19a62cc1f1eb9d9170eca9e127a191f"
+  }
+}

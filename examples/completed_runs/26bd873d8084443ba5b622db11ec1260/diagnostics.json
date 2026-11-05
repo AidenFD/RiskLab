@@ -1,0 +1,183 @@
+{
+  "status": "NO INSTABILITY FLAG",
+  "bootstrap_resamples": 300,
+  "bootstrap_interval": "95% percentile; linear empirical quantile",
+  "bootstrap_stream": {
+    "entropy": 42,
+    "spawn_key": [
+      1701,
+      0
+    ]
+  },
+  "intervals": {
+    "0.95": {
+      "var": [
+        6509.502694702693,
+        6763.542257307366
+      ],
+      "es": [
+        7833.980246053838,
+        8120.669666786068
+      ]
+    },
+    "0.99": {
+      "var": [
+        8656.45398471356,
+        8997.028050568859
+      ],
+      "es": [
+        9506.890476467479,
+        10066.19900490211
+      ]
+    }
+  },
+  "replicates": [
+    {
+      "seed": 7443062296288816379,
+      "spawn_key": [
+        1701,
+        1
+      ],
+      "summary": {
+        "initial_equity": 41987.621577104816,
+        "n_paths": 10000,
+        "probability_of_loss": 0.4818,
+        "probability_se": 0.004996686502073149,
+        "probability_wilson_95": [
+          0.4720155411811613,
+          0.49159843635953127
+        ],
+        "mean_terminal_equity": 42596.9818680019,
+        "median_terminal_equity": 42182.2293719766,
+        "terminal_quantiles": {
+          "0.01": 33152.99970255132,
+          "0.05": 35496.23371250464,
+          "0.5": 42182.2293719766,
+          "0.95": 51142.894711966044,
+          "0.99": 55472.71659382001
+        },
+        "loss_mean": -609.360290897085,
+        "tails": {
+          "0.95": {
+            "var": 6491.172516847786,
+            "es": 7926.976412481268,
+            "var_fraction": 0.15459729017819193,
+            "es_fraction": 0.1887931755773402,
+            "rank": 9500,
+            "tail_count": 500,
+            "tail_sufficient": true
+          },
+          "0.99": {
+            "var": 8834.312844888977,
+            "es": 9904.593913479997,
+            "var_fraction": 0.21040279284850436,
+            "es_fraction": 0.23589318807428747,
+            "rank": 9900,
+            "tail_count": 100,
+            "tail_sufficient": true
+          }
+        },
+        "drawdown_quantile_method": "linear",
+        "drawdown_quantiles": {
+          "0.5": 0.11104140849055186,
+          "0.95": 0.20456903809009128,
+          "0.99": 0.2462103747329918
+        },
+        "loss_convention": "initial_equity - terminal_equity; gains are negative",
+        "var_convention": "ascending loss at one-based ceil(alpha*N)",
+        "es_convention": "mean of largest ceil((1-alpha)*N) losses; no zero floor",
+        "stability": "NOT ASSESSED"
+      }
+    },
+    {
+      "seed": 144326481590390091,
+      "spawn_key": [
+        1701,
+        2
+      ],
+      "summary": {
+        "initial_equity": 41987.621577104816,
+        "n_paths": 10000,
+        "probability_of_loss": 0.474,
+        "probability_se": 0.004993235424051223,
+        "probability_wilson_95": [
+          0.4642252964587962,
+          0.4837946714564788
+        ],
+        "mean_terminal_equity": 42687.9993373853,
+        "median_terminal_equity": 42285.75139826356,
+        "terminal_quantiles": {
+          "0.01": 32969.454267743444,
+          "0.05": 35469.38184714091,
+          "0.5": 42285.75139826356,
+          "0.95": 51059.32640746328,
+          "0.99": 55407.617083268065
+        },
+        "loss_mean": -700.3777602804846,
+        "tails": {
+          "0.95": {
+            "var": 6517.990493045596,
+            "es": 7975.110436013061,
+            "var_fraction": 0.15523600166482765,
+            "es_fraction": 0.18993956162455658,
+            "rank": 9500,
+            "tail_count": 500,
+            "tail_sufficient": true
+          },
+          "0.99": {
+            "var": 9018.161568922427,
+            "es": 9876.594261507438,
+            "var_fraction": 0.2147814339128913,
+            "es_fraction": 0.2352263331556029,
+            "rank": 9900,
+            "tail_count": 100,
+            "tail_sufficient": true
+          }
+        },
+        "drawdown_quantile_method": "linear",
+        "drawdown_quantiles": {
+          "0.5": 0.11048026623945345,
+          "0.95": 0.20584150187539516,
+          "0.99": 0.24420714434566687
+        },
+        "loss_convention": "initial_equity - terminal_equity; gains are negative",
+        "var_convention": "ascending loss at one-based ceil(alpha*N)",
+        "es_convention": "mean of largest ceil((1-alpha)*N) losses; no zero floor",
+        "stability": "NOT ASSESSED"
+      }
+    }
+  ],
+  "flags": [],
+  "comparisons": [
+    {
+      "confidence": "0.95",
+      "metric": "var",
+      "estimate_range": 138.81576115872303,
+      "threshold": 508.0791252093459,
+      "flag": false
+    },
+    {
+      "confidence": "0.95",
+      "metric": "es",
+      "estimate_range": 49.810591803018724,
+      "threshold": 573.3788414644605,
+      "flag": false
+    },
+    {
+      "confidence": "0.99",
+      "metric": "var",
+      "estimate_range": 214.45555889120442,
+      "threshold": 681.1481317105972,
+      "flag": false
+    },
+    {
+      "confidence": "0.99",
+      "metric": "es",
+      "estimate_range": 127.53927310117433,
+      "threshold": 1118.6170568692614,
+      "flag": false
+    }
+  ],
+  "rule": "Flag if primary + two independent estimate range exceeds max(2 * primary 95% bootstrap interval width, 1% initial equity)",
+  "limitations": "Heuristic finite-sample Monte Carlo stability check under one model; not a probability of correct real-world risk."
+}

@@ -1,0 +1,322 @@
+[
+  {
+    "label": "Zero log mean",
+    "drift_mode": "ZERO_LOG_MEAN",
+    "volatility_scale": 1.0,
+    "summary": {
+      "initial_equity": 41987.621577104816,
+      "n_paths": 10000,
+      "probability_of_loss": 0.4776,
+      "probability_se": 0.004994979879839358,
+      "probability_wilson_95": [
+        0.4678204969648807,
+        0.4873967061621255
+      ],
+      "mean_terminal_equity": 42627.320655900134,
+      "median_terminal_equity": 42237.68543985959,
+      "terminal_quantiles": {
+        "0.01": 33183.902272661595,
+        "0.05": 35357.32770704981,
+        "0.5": 42237.68543985959,
+        "0.95": 51094.4847755868,
+        "0.99": 55413.55935666653
+      },
+      "loss_mean": -639.6990787953165,
+      "tails": {
+        "0.95": {
+          "var": 6629.988278006509,
+          "es": 7976.787004284287,
+          "var_fraction": 0.15790340174023423,
+          "es_fraction": 0.18997949168508993,
+          "rank": 9500,
+          "tail_count": 500,
+          "tail_sufficient": true
+        },
+        "0.99": {
+          "var": 8803.706010031223,
+          "es": 9777.054640378823,
+          "var_fraction": 0.20967384384620025,
+          "es_fraction": 0.23285564347636437,
+          "rank": 9900,
+          "tail_count": 100,
+          "tail_sufficient": true
+        }
+      },
+      "drawdown_quantile_method": "linear",
+      "drawdown_quantiles": {
+        "0.5": 0.11075336669756033,
+        "0.95": 0.2059350697225342,
+        "0.99": 0.24647140013688512
+      },
+      "loss_convention": "initial_equity - terminal_equity; gains are negative",
+      "var_convention": "ascending loss at one-based ceil(alpha*N)",
+      "es_convention": "mean of largest ceil((1-alpha)*N) losses; no zero floor",
+      "stability": "NOT ASSESSED"
+    },
+    "seed": 42,
+    "n_steps": 252,
+    "covariance": [
+      [
+        9.724443255217255e-05,
+        3.546112470701662e-05,
+        1.0501988772565054e-05
+      ],
+      [
+        3.546112470701662e-05,
+        0.0002519403841820382,
+        1.40495152058006e-05
+      ],
+      [
+        1.0501988772565054e-05,
+        1.40495152058006e-05,
+        6.653448892330616e-05
+      ]
+    ],
+    "applied_mean": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "comparison_design": "paired common random seed, not independent stability replicates"
+  },
+  {
+    "label": "Estimated log mean",
+    "drift_mode": "ESTIMATED_LOG_MEAN",
+    "volatility_scale": 1.0,
+    "summary": {
+      "initial_equity": 41987.621577104816,
+      "n_paths": 10000,
+      "probability_of_loss": 0.3185,
+      "probability_se": 0.004658945696184921,
+      "probability_wilson_95": [
+        0.3094398172914005,
+        0.32769957411715506
+      ],
+      "mean_terminal_equity": 44614.552645117335,
+      "median_terminal_equity": 44231.11347852391,
+      "terminal_quantiles": {
+        "0.01": 34690.448452757824,
+        "0.05": 36978.8818488618,
+        "0.5": 44231.11347852391,
+        "0.95": 53525.538269325545,
+        "0.99": 57905.64775257431
+      },
+      "loss_mean": -2626.931068012522,
+      "tails": {
+        "0.95": {
+          "var": 5008.538985175954,
+          "es": 6410.354278347645,
+          "var_fraction": 0.11928608473281636,
+          "es_fraction": 0.15267247911568083,
+          "rank": 9500,
+          "tail_count": 500,
+          "tail_sufficient": true
+        },
+        "0.99": {
+          "var": 7297.0770658844995,
+          "es": 8309.039609442605,
+          "var_fraction": 0.17379115062481842,
+          "es_fraction": 0.19789260018417887,
+          "rank": 9900,
+          "tail_count": 100,
+          "tail_sufficient": true
+        }
+      },
+      "drawdown_quantile_method": "linear",
+      "drawdown_quantiles": {
+        "0.5": 0.09651533407829754,
+        "0.95": 0.17988820359047758,
+        "0.99": 0.22034144579674184
+      },
+      "loss_convention": "initial_equity - terminal_equity; gains are negative",
+      "var_convention": "ascending loss at one-based ceil(alpha*N)",
+      "es_convention": "mean of largest ceil((1-alpha)*N) losses; no zero floor",
+      "stability": "NOT ASSESSED"
+    },
+    "seed": 42,
+    "n_steps": 252,
+    "covariance": [
+      [
+        9.724443255217255e-05,
+        3.546112470701662e-05,
+        1.0501988772565054e-05
+      ],
+      [
+        3.546112470701662e-05,
+        0.0002519403841820382,
+        1.40495152058006e-05
+      ],
+      [
+        1.0501988772565054e-05,
+        1.40495152058006e-05,
+        6.653448892330616e-05
+      ]
+    ],
+    "applied_mean": [
+      0.00041729257428966903,
+      6.896418881537955e-05,
+      8.159773446756787e-05
+    ],
+    "comparison_design": "paired common random seed, not independent stability replicates"
+  },
+  {
+    "label": "Low volatility (0.5x)",
+    "drift_mode": "ZERO_LOG_MEAN",
+    "volatility_scale": 0.5,
+    "summary": {
+      "initial_equity": 41987.621577104816,
+      "n_paths": 10000,
+      "probability_of_loss": 0.4902,
+      "probability_se": 0.004999039507745463,
+      "probability_wilson_95": [
+        0.48040770644536557,
+        0.4999998199226996
+      ],
+      "mean_terminal_equity": 42138.651082921395,
+      "median_terminal_equity": 42040.187214893,
+      "terminal_quantiles": {
+        "0.01": 37183.193375324736,
+        "0.05": 38426.10990047338,
+        "0.5": 42040.187214893,
+        "0.95": 46144.58397498134,
+        "0.99": 47901.64442743181
+      },
+      "loss_mean": -151.0295058165857,
+      "tails": {
+        "0.95": {
+          "var": 3561.4047245815236,
+          "es": 4342.047815317071,
+          "var_fraction": 0.08482034920795564,
+          "es_fraction": 0.10341256904355642,
+          "rank": 9500,
+          "tail_count": 500,
+          "tail_sufficient": true
+        },
+        "0.99": {
+          "var": 4804.416326149425,
+          "es": 5397.193343009801,
+          "var_fraction": 0.11442458862135685,
+          "es_fraction": 0.1285424880068178,
+          "rank": 9900,
+          "tail_count": 100,
+          "tail_sufficient": true
+        }
+      },
+      "drawdown_quantile_method": "linear",
+      "drawdown_quantiles": {
+        "0.5": 0.057506691029500914,
+        "0.95": 0.11110855505152366,
+        "0.99": 0.13616064191506602
+      },
+      "loss_convention": "initial_equity - terminal_equity; gains are negative",
+      "var_convention": "ascending loss at one-based ceil(alpha*N)",
+      "es_convention": "mean of largest ceil((1-alpha)*N) losses; no zero floor",
+      "stability": "NOT ASSESSED"
+    },
+    "seed": 42,
+    "n_steps": 252,
+    "covariance": [
+      [
+        2.4311108138043138e-05,
+        8.865281176754156e-06,
+        2.6254971931412635e-06
+      ],
+      [
+        8.865281176754156e-06,
+        6.298509604550955e-05,
+        3.51237880145015e-06
+      ],
+      [
+        2.6254971931412635e-06,
+        3.51237880145015e-06,
+        1.663362223082654e-05
+      ]
+    ],
+    "applied_mean": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "comparison_design": "paired common random seed, not independent stability replicates"
+  },
+  {
+    "label": "High volatility (2x)",
+    "drift_mode": "ZERO_LOG_MEAN",
+    "volatility_scale": 2.0,
+    "summary": {
+      "initial_equity": 41987.621577104816,
+      "n_paths": 10000,
+      "probability_of_loss": 0.4545,
+      "probability_se": 0.004979254462266414,
+      "probability_wilson_95": [
+        0.44476017079745683,
+        0.4642747730542746
+      ],
+      "mean_terminal_equity": 44705.89851901754,
+      "median_terminal_equity": 43044.54988012827,
+      "terminal_quantiles": {
+        "0.01": 26907.757230820203,
+        "0.05": 30369.629886854826,
+        "0.5": 43044.54988012827,
+        "0.95": 64209.50088682699,
+        "0.99": 77012.38477301753
+      },
+      "loss_mean": -2718.2769419127194,
+      "tails": {
+        "0.95": {
+          "var": 11617.773838094781,
+          "es": 13706.437175228379,
+          "var_fraction": 0.276695211629462,
+          "es_fraction": 0.3264399520715477,
+          "rank": 9500,
+          "tail_count": 500,
+          "tail_sufficient": true
+        },
+        "0.99": {
+          "var": 15079.747338443536,
+          "es": 16425.8452234789,
+          "var_fraction": 0.35914745279752364,
+          "es_fraction": 0.3912068511267057,
+          "rank": 9900,
+          "tail_count": 100,
+          "tail_sufficient": true
+        }
+      },
+      "drawdown_quantile_method": "linear",
+      "drawdown_quantiles": {
+        "0.5": 0.2071811081786148,
+        "0.95": 0.3571187325094834,
+        "0.99": 0.41799848824946145
+      },
+      "loss_convention": "initial_equity - terminal_equity; gains are negative",
+      "var_convention": "ascending loss at one-based ceil(alpha*N)",
+      "es_convention": "mean of largest ceil((1-alpha)*N) losses; no zero floor",
+      "stability": "NOT ASSESSED"
+    },
+    "seed": 42,
+    "n_steps": 252,
+    "covariance": [
+      [
+        0.0003889777302086902,
+        0.0001418444988280665,
+        4.2007955090260216e-05
+      ],
+      [
+        0.0001418444988280665,
+        0.0010077615367281528,
+        5.61980608232024e-05
+      ],
+      [
+        4.2007955090260216e-05,
+        5.61980608232024e-05,
+        0.00026613795569322465
+      ]
+    ],
+    "applied_mean": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "comparison_design": "paired common random seed, not independent stability replicates"
+  }
+]

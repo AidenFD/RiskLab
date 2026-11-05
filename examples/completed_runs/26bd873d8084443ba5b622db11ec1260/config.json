@@ -1,0 +1,12 @@
+{
+  "n_paths": 10000,
+  "n_steps": 252,
+  "seed": 42,
+  "batch_size": 512,
+  "preview_count": 20,
+  "confidences": [
+    "0.95",
+    "0.99"
+  ],
+  "drift_mode": "ZERO_LOG_MEAN"
+}

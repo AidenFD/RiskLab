@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "name": "Deterministic constant equity",
+  "portfolio": {
+    "currency": "USD",
+    "as_of_session": "2023-11-27",
+    "cash": "5000",
+    "positions": [
+      {
+        "symbol": "SYN-A",
+        "instrument_type": "EQUITY",
+        "quantity": "100",
+        "initial_price": "100"
+      }
+    ]
+  },
+  "model": {
+    "kind": "MANUAL",
+    "symbols": [
+      "SYN-A"
+    ],
+    "daily_log_mean": [
+      0
+    ],
+    "daily_log_cov": [
+      [
+        0
+      ]
+    ]
+  }
+}
