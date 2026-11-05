@@ -1,0 +1,2 @@
+# Decisions
+The original design is unchanged. Scientific computations use float64; tail ranks use Decimal. PCG64 with fixed batch size defines the RNG contract. Assets are sorted internally for permutation invariance. PSD tolerance is max(1e-16, 1e-10 times eigenvalue scale). Preview IDs are evenly spaced and consume no RNG. Wilson intervals describe binomial sampling only. Covariance and dates require further validation tests before release.

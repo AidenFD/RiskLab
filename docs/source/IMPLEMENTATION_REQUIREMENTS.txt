@@ -1,0 +1,1011 @@
+# RiskLab - Final master implementation prompt
+
+QuantLab / Risk | Project owner: Aiden Federico-Dyer
+
+Prepared November 4, 2026. Adapted from the final OrderBookLab implementation
+prompt and RiskLab technical design v0.1 dated September 24, 2026.
+
+Use this prompt with one complete RiskLab design document. The RiskLab design
+files supplied for this request are duplicate copies, rather than separate
+versions to merge. If available, also supply the completed BacktestLab and
+OrderBookLab source packages as product and engineering references.
+
+This document specifies work to perform. It does not claim that RiskLab has
+already been implemented, tested, benchmarked, or packaged.
+
+---
+
+## 1. Role and source authority
+
+You are Codex acting as lead software engineer, quantitative risk engineer,
+desktop application engineer, test engineer, UX engineer, and documentation
+owner for RiskLab. Apply the same engineering standard used for BacktestLab
+and OrderBookLab, with RiskLab's own mathematics and workflows.
+
+- Project: RiskLab.
+- Suite: QuantLab.
+- Owner: Aiden Federico-Dyer.
+- Primary platform: Windows 10/11 desktop.
+- Language: Python 3.12 or a specifically verified compatible later version.
+- Framework: PySide6.
+- Numerical library: NumPy, with an explicit tested version.
+- Visualization: prefer pyqtgraph where appropriate.
+- Product: a local Monte Carlo portfolio risk research application.
+
+Read the complete RiskLab design before implementing anything. It governs
+model semantics, covariance handling, portfolio valuation, finite-sample risk
+definitions, scope, acceptance fixtures, and milestone order. This prompt adds
+the desktop experience, operational contracts, and verification requirements.
+
+Inspect existing RiskLab work first. Preserve useful code and history. Inspect
+BacktestLab and OrderBookLab references when available for their theme, local
+run history, tests, Windows experience, and documentation. They are references,
+not runtime dependencies. If absent, use the concrete suite standard below and
+record that visual comparison was unavailable; do not stop solely for them.
+
+Do not import their packages, embed their repositories, copy their financial
+engines, or require them to launch RiskLab. Inspect licensing before reusing
+source. In particular, do not inherit order matching, integer price ticks,
+order-entry controls, fees, trading strategies, or whole-share execution rules
+where they do not belong in a fixed-holdings risk simulator.
+
+Record routine clarifications in DECISIONS.md. Ask only when a genuine conflict
+would materially change the model or risk destroying existing work. The
+implementation choices explicitly stated below resolve the design's open
+questions unless inspection reveals a real contradiction.
+
+## 2. Primary objective and professional standard
+
+Build a working, polished desktop application backed by a verified numerical
+engine. A user must be able to:
+
+1. Launch RiskLab from its Windows launcher or a verified packaged executable.
+2. Load a bundled, clearly labeled synthetic example immediately.
+3. Inspect fixed holdings, initial prices, cash, and initial equity.
+4. Import and validate compatible daily price history with session metadata.
+5. Inspect estimated daily log means, covariance, and model diagnostics.
+6. Select zero log mean or estimated historical log mean.
+7. Configure horizon, path count, seed, batch size, and risk confidence levels.
+8. Run correlated simulations without freezing the interface.
+9. Inspect terminal outcomes, loss estimates, and per-path maximum drawdowns.
+10. Understand sampling uncertainty and the assumptions behind every result.
+11. Compare comparable scenarios without overwriting earlier results.
+12. Cancel safely, recover from invalid input, and retain completed work.
+13. Save, close, restart, and reopen results without rerunning the model.
+14. Export an auditable, portable run folder or ZIP.
+
+This is for demonstrations, GitHub, interviews, and technical portfolio review.
+It should demonstrate statistics, numerical linear algebra, simulation,
+validation, reproducibility, memory reasoning, and desktop engineering.
+Prefer explainable correctness over unnecessary complexity.
+
+Do not finish with only a notebook, CLI, static screen, mock dashboard,
+animation, or charts containing invented numbers. A useful CLI is welcome as
+an additional interface to the same headless engine.
+
+## 3. Working mode
+
+BEGIN IMPLEMENTATION after inspection. Do not stop after a plan or scaffold.
+Implement and verify milestones sequentially, fix failures, integrate the
+desktop, polish it, benchmark it, document it, and package achievable outputs.
+Do not repeatedly ask whether to continue.
+
+For ordinary engineering choices: choose a defensible simple option, record
+it, test it, and continue. Do not request external credentials, accounts, paid
+market data, or live brokerage access for a synthetic demonstration.
+
+Keep concise progress updates focused on decisions and verified outcomes.
+Use STATUS.md, DECISIONS.md, and BACKLOG.md to preserve continuity. A practical
+environment limitation should be documented, not concealed or used to abandon
+independent work that remains possible.
+
+## 4. Honesty and verification
+
+Never fabricate tests, performance, screenshots, simulated statistics, saved
+run integrity, Windows execution, or packaged startup. Existing code is not
+proof of behavior. Label untested behavior UNVERIFIED and unmeasured design
+budgets TARGET. Report skips and failures with their reasons.
+
+Synthetic calibration data must remain labeled SYNTHETIC everywhere relevant.
+Simulated future paths remain simulated even when calibrated from real data.
+Never manufacture a historical SPY series or relabel a synthetic demo as
+verified market history. Do not present model outcomes as forecasts, guaranteed
+bounds, investment recommendations, or demonstrated trading profitability.
+
+Separate numerical correctness, Monte Carlo precision, parameter estimation
+uncertainty, and model realism. Passing tests does not establish the latter.
+Keep limitations clear and readable, without filling the product with legal
+boilerplate or implementation details unrelated to a user's decision.
+
+## 5. V1 scope and defaults
+
+Implement one to ten USD assets, fixed nonnegative share quantities,
+nonnegative cash earning zero interest, positive initial prices, one to 252
+future session steps, and correlated Gaussian DAILY LOG returns. Fractional
+holdings are allowed: this is valuation, not an execution simulator.
+
+Provide both estimated historical log means and a ZERO_LOG_MEAN mode. Use
+ZERO_LOG_MEAN as the initial UI default to make historical drift extrapolation
+an explicit choice. Explain that zero log mean does not imply zero expected
+arithmetic return or zero expected price change.
+
+Starting configuration: 10,000 primary paths, 252 steps, an explicit fixed
+example seed, batch size 512, and confidence levels 95% and 99%. Validate all
+limits and tail requirements before starting. Publish the final supported
+limits and resource policy; do not silently accept arbitrarily large requests.
+
+V1 excludes shorts, borrowing, leverage, rebalancing, cash interest, FX,
+transaction costs, execution, live trading, options, derivatives, margin,
+dividend payment processing, split processing, and automatic market downloads.
+Reject unsupported position types rather than treating them as ordinary stock.
+
+Total-return indices, block bootstrap, time-varying covariance, jumps,
+volatility clustering, and named deterministic shocks are later extensions.
+Do not quietly add them before the baseline is verified. Comparing low and
+high volatility is supported through explicit parameter scenarios; do not
+assign probabilities to a named stress event without a model that defines them.
+
+## 6. Architecture and repository
+
+Keep core computation independent of Qt and file dialogs. Separate validation,
+calibration, sampling, valuation, aggregation, persistence, and presentation.
+Use typed records, dataclasses, enums, explicit errors, and small modules with
+real responsibilities. Do not create empty architectural theater.
+
+Suggested package modules:
+
+- risklab/core/models.py: immutable domain records and enums.
+- risklab/core/inputs.py: portfolio and history validation.
+- risklab/core/calibration.py: log means and sample covariance.
+- risklab/core/covariance.py: diagnostics and PSD factorization.
+- risklab/core/simulation.py: batched correlated increments and orchestration.
+- risklab/core/valuation.py: fixed-holdings equity and drawdown.
+- risklab/core/risk.py: terminal loss statistics and uncertainty.
+- risklab/core/config.py, errors.py, export.py.
+- risklab/services/runs.py, settings.py, comparisons.py.
+- risklab/ui/application.py, main_window.py, views/, widgets/, workers/,
+  dialogs/, theme/; risklab/resources/; risklab/__main__.py.
+- tests/unit/, integration/, statistical/, reference/, ui/, fixtures/.
+- examples/portfolios/, histories/, models/, invalid/, completed_runs/.
+- scripts/benchmark.py, generate_samples.py, verify_release.py.
+- docs/ including source/, screenshots/, architecture and verification evidence.
+
+Root files: README.md, START_HERE.txt, STATUS.md, DECISIONS.md, BACKLOG.md,
+CHANGELOG.md, pyproject.toml, pinned requirements, RiskLab.spec,
+Setup_Windows.cmd, Launch_RiskLab.cmd, Build_Windows.cmd, appropriate LICENSE
+and notices, and .gitignore.
+
+The conceptual API must support fit_model(returns, asset_order, drift_mode),
+simulate(snapshot, model, config), and summarize(terminal_equity,
+max_drawdowns, initial_equity). Refine signatures as needed without coupling
+the engine to widgets or user-machine paths.
+
+## 7. Records and numerical representation
+
+Define PortfolioSnapshot, ReturnMatrix, ModelParameters, CovarianceDiagnostics,
+SimulationConfig, ProgressSnapshot, RiskSummary, RiskResult, and RunManifest.
+Include units, source provenance, schema/model versions, and ordered symbols.
+
+Use float64 for scientific computation. Parse inputs strictly, preserve exact
+entered decimal strings where useful for provenance, and reject nonfinite or
+unrepresentable conversions. Do not round simulated prices, cash, quantities,
+or equity to display cents inside the model. Format money only for display.
+Declare comparison tolerances and serialization precision.
+
+Immutable records containing arrays need owned read-only arrays or safe
+copies; a frozen dataclass alone does not make an ndarray immutable. Prevent
+UI edits and caller mutation from changing active or saved simulation inputs.
+Serialized JSON must not contain NaN or Infinity. Use explicit null and a
+reason where a display statistic is undefined.
+
+## 8. Portfolio contract
+
+Use a versioned, documented JSON snapshot containing as_of_session, currency,
+cash, ordered positions, symbol, quantity, initial_price, and supported
+instrument type. Prices and quantities must match declared units.
+
+Reject duplicate or empty symbols, duplicate JSON keys, unsupported currencies,
+negative quantities or cash, nonpositive prices, nonfinite values, mismatched
+dimensions, unsupported instruments, and nonpositive total initial equity.
+Do not interpret booleans as numeric quantities, seeds, steps, or path counts.
+
+Initial equity is cash plus sum(quantity times initial_price). Permit zero
+positions and an all-cash portfolio when it contains a valid declared asset
+universe and has positive equity. Validate all declared assets, including
+zero-quantity positions, consistently.
+
+For calibrated scenarios, require the snapshot date to match the final retained
+price session and initial prices to match that row within a documented tight
+tolerance. Do not silently mix a current snapshot with a different historical
+price level. A manual hypothetical scenario must be labeled as such.
+
+## 9. History contract and price basis
+
+Define one easy, strict import format, preferably a wide UTF-8 CSV with Date
+and one positive raw-price column per symbol, plus a matching-stem metadata
+JSON. Supply both files together in every example.
+
+Metadata must identify schema, source kind, price basis, currency, symbol
+mapping, expected ordered sessions, calendar identity, and action assumptions.
+V1 supports the design's synthetic action-free raw-price fixtures and can
+accept user-supplied raw history only with an explicit action-free declaration
+for the whole estimation interval. Distinguish USER_DECLARED from independently
+verified provenance. Do not claim the app verifies a vendor's action history.
+
+Reject unsupported adjusted/total-return modes rather than labeling an index
+as a tradable share price. Do not claim real dividend-paying SPY has no actions
+because a synthetic sample used none. Explain the import boundary in plain
+language and keep unsupported market-data modes in BACKLOG.md.
+
+Validate dates, strict session order, duplicate rows/headers, symbols, blanks,
+parsing, finite positive prices, and required metadata. Show filename, row,
+symbol, and rule where possible. Do not forward-fill, backfill, interpolate,
+drop bad values, assume every weekday is a trading session, or silently align
+misdated inputs.
+
+## 10. Alignment and calibration
+
+Each matrix row represents one complete adjacent session interval and each
+column one identified asset. Match symbols before converting to arrays.
+Validate against declared expected sessions; a missing required session or
+multi-session gap is an error. A Friday-to-Monday interval is adjacent only
+when the declared calendar says so. Reject gaps in a declared interval instead
+of hiding them through an intersection operation.
+
+For adjacent prices compute g[t,i] = log(P[t,i] / P[t-1,i]). Use the same
+complete dates for all assets. Do not include estimation data after the
+snapshot date. Report price rows, usable return observations, first/last
+interval, and missing-data diagnostics.
+
+Estimate daily log means and sample covariance with denominator n - 1 and
+assets in columns. Handle the one-asset covariance shape explicitly. As an
+engineering floor, require at least max(60, 10 times asset_count) complete log
+return observations for historical calibration. Record this choice and explain
+that it is not a statistical guarantee. Manual test models do not need
+fabricated history to bypass this requirement.
+
+ZERO_LOG_MEAN changes only the applied mean, not the historical sample
+covariance estimate. Store estimated means and applied means separately.
+Do not recenter covariance around zero as if zero were the sample mean.
+Keep daily parameters daily. Annualized figures are display-only, with their
+session-count convention labeled.
+
+## 11. Manual parameter scenarios
+
+Provide a versioned manual model JSON and a usable editor/import workflow for
+deterministic, low-volatility, high-volatility, and singular-correlation tests.
+Use ordered daily log means and a daily log covariance matrix, with explicit
+symbol labels. Validate through the same covariance policy as calibrated data.
+
+Do not require users to enter arbitrary matrix elements for the main demo;
+presets and simple, properly validated controls are appropriate. Advanced
+manual covariance input must identify dimensions and units clearly. Editing
+a model creates a new scenario; it does not change a published result.
+
+## 12. Covariance validation and factorization
+
+Check dimensions, finiteness, symmetry, and eigenvalues before drawing any
+shocks. Reject materially asymmetric or indefinite matrices. Declare the
+symmetry tolerance and relative PSD tolerance, with a small absolute floor
+in daily-variance units. Do not use an unexplained large absolute tolerance
+that can swallow meaningful negative eigenvalues in small daily covariances.
+
+Tiny negative eigenvalues within that declared tolerance may be clipped to
+zero. Record original and effective matrices, eigenvalues before/after,
+tolerances, corrections, numerical rank, and factorization method. Do not
+silently add diagonal jitter, shrink covariance, replace correlation, or repair
+materially invalid inputs into a different model.
+
+Support singular positive-semidefinite matrices, including zero covariance
+and perfectly correlated assets. Use an eigenvalue factorization or another
+verified PSD method; ordinary Cholesky alone is insufficient [1].
+
+For Sigma = Q diag(lambda) Q-transpose, a factor is
+B = Q diag(sqrt(clipped_lambda)); verify B B-transpose matches effective
+Sigma. For row-oriented independent normal draws Z, use Z B-transpose.
+Test orientation explicitly. Undefined correlation for zero-variance assets
+must be N/A with a reason, not a fabricated zero or invalid JSON number.
+
+## 13. Return model and valuation
+
+For each future session, sample g ~ Normal(m, Sigma), independently across
+time and correlated across assets within the session. Update
+S_next[i] = S_current[i] times exp(g[i]). m already is mean log return:
+DO NOT subtract one-half variance again. An arithmetic-drift GBM interface
+would be a different future contract.
+
+For every path and step, V = cash + sum(quantity[i] times S[i]). Cash and
+share quantities stay fixed. Include step zero. Compute the running equity
+peak and maximum proportional drawdown for each path as it progresses.
+
+Check numerical finiteness and positivity after operations. Overflow,
+underflow to unusable zero prices, or invalid valuation must fail explicitly
+with batch/step context; do not clip, discard affected paths, or publish a
+biased result. Distinguish model-generated Gaussian tails from numeric errors.
+
+## 14. Asset order and reproducibility
+
+Keep the user's declared asset order visible and persisted. Maintain explicit
+identifier-based mappings among portfolio, returns, mean, covariance, and
+shocks. Never rely on accidental dictionary or CSV column ordering.
+
+To satisfy the design's same-seed permutation fixture, use a documented
+canonical internal symbol order for factorization and random consumption,
+then map outputs back to the declared order. Record both orders and mappings.
+Permuting only labels must not silently change portfolio economics.
+
+Use an explicit NumPy Generator and named BitGenerator, such as PCG64, rather
+than process-global random state. Record seed, generator, NumPy/Python/build
+information, sampling algorithm, factorization, batching, and effective model.
+Promise repeatability only under the same documented execution environment
+and random-call contract [2]. A seed alone is not a universal guarantee.
+
+Do not claim batch-size invariance unless proved. It is acceptable for batch
+size to be part of the reproducibility contract. UI rendering, sorting,
+preview selection, and uncertainty diagnostics must not consume the main
+simulation RNG. Use explicitly derived independent streams and record their
+derivation; avoid ad hoc seed-plus-one assumptions for independent checks.
+
+## 15. Batching and bounded memory
+
+Do not allocate the full paths-by-steps-by-assets tensor for normal runs.
+Process bounded batches, retaining current asset prices, running portfolio
+peaks, per-path maximum drawdown, terminal values, and a small display subset.
+Use vectorization within batches instead of Python loops over every path.
+
+Choose preview path IDs reproducibly without perturbing the simulation stream.
+Store their full equity paths, path IDs, and selection rule. Capture preview
+paths during simulation; do not rerun an inconsistent separate process for
+the chart. Summary statistics must use every completed primary path, never
+only the preview subset.
+
+If the path chart shows a preview envelope, label its subset size. Do not call
+it a full-population percentile band. Full-path quantile bands are optional
+only with a tested, budgeted aggregation method and clear exact/approximate
+semantics. Sample minima and maxima are not guaranteed future bounds.
+
+## 16. Exact loss, VaR, ES, and drawdown definitions
+
+Let V0 be initial equity, VN each terminal equity, and loss L = V0 - VN.
+Gains are negative losses. Do not floor VaR or expected shortfall at zero.
+
+For N sorted ascending losses and confidence alpha in (0,1):
+
+- k = ceil(alpha times N), using one-based indexing.
+- VaR(alpha) is sorted_loss[k - 1] in zero-based code.
+- q = ceil((1 - alpha) times N).
+- ES(alpha) is the mean of the q largest losses.
+- Probability of loss is count(VN < V0) / N, using a strict inequality.
+- Its approximate Monte Carlo SE is sqrt(p times (1-p) / N).
+
+Use exact decimal/rational confidence arithmetic for k and q, or a thoroughly
+tested equivalent. Binary rounding must not turn a 100-observation tail into
+101 at a boundary. Export alpha, k, q, indexing and tie conventions. Do not
+replace this finite-sample ES with another fractional-tail convention without
+explicitly changing and documenting the source contract.
+
+Maximum drawdown is max over steps of (running_peak - current_equity) divided
+by running_peak, calculated separately within each full path including step
+zero. Then summarize those per-path drawdowns with a declared quantile method.
+It is not the drawdown of the median path or of the mean equity curve.
+
+Report terminal equity and loss distributions, means/medians and useful
+quantiles, VaR/ES in dollars and fraction of V0, loss probability, and drawdown
+quantiles. Use distinct labels for terminal loss risk and path drawdown risk.
+
+## 17. Tail sufficiency and uncertainty
+
+For a normal published risk run, require at least 100 observations in EVERY
+selected tail. At 99% confidence this requires at least 10,000 paths under
+the stated convention. Reject insufficient configurations before sampling;
+show the minimum needed and preserve the user's form. Low-level summarizer
+tests can use tiny fixtures without pretending they are adequate estimates.
+
+Show path count, tail count, horizon, confidence, seed, and probability SE.
+At p = 0 or 1, explain that the plug-in SE being zero does not establish
+certainty. Provide a suitable binomial interval, such as Wilson, for loss
+probability and document its confidence level.
+
+Implement a separate uncertainty/stability diagnostic for VaR and ES. A
+reasonable v1 is empirical bootstrap intervals over ALL primary terminal
+losses with a separately seeded diagnostic RNG, plus independently seeded
+repeat simulations. Document resampling count, interval rule, and limitations;
+resample the complete loss sample, not only the observed tail. Bound memory
+by processing resamples incrementally.
+
+Provide a working Check Stability action using at least two additional
+independent simulation streams at the same portfolio, model, horizon, path
+count, and confidence settings. Report each replicate separately, including
+seed derivation and tail count. Do not silently pool these into the primary
+N or replace primary results.
+
+Choose and document a defensible rule for materially unstable tail estimates,
+using sampling uncertainty and a stated monetary scale rather than dividing
+by a nearly zero VaR. Show a warning when triggered. If diagnostics were not
+run, show NOT ASSESSED; if cancelled, show INCOMPLETE. Never display STABLE
+solely because the minimum tail count was met. Diagnostic intervals describe
+Monte Carlo sampling under this model, not total real-world risk uncertainty.
+
+## 18. Scenario comparisons
+
+Support low-volatility versus high-volatility and zero-log-mean versus
+estimated-log-mean comparisons using the same declared snapshot. Preserve
+portfolio, horizon, path count, confidence definitions, and units. Show every
+intentionally changed parameter and a separate identity for each result.
+
+Common random numbers may be used for controlled sensitivity comparisons
+when explicitly documented. Such paired scenarios are not independent seed
+replicates for stability assessment. Never silently conflate the two.
+
+Display actual computed results, not an assertion that every finite random
+sample must rank in the expected order. Do not call a scenario comparison
+a strategy backtest or a portfolio optimizer.
+
+## 19. State and invariant checks
+
+Enforce finite positive simulated prices, fixed quantities/cash, correct asset
+mapping, equity reconciliation, terminal-array length N, one outcome per path,
+drawdowns in [0,1] within numerical tolerance, and valid summary indexing.
+Running peaks never decrease and accumulated maximum drawdown never decreases.
+
+For zero covariance and zero mean, preserve constant values. For all-cash
+exposure, preserve cash equity regardless of asset shocks. Ensure changing
+preview size, table order, chart refresh rate, or screen navigation cannot
+change numerical results. Add tolerances intentionally, not to hide defects.
+
+## 20. Saved-run contract
+
+Persist a self-contained, versioned run folder. Include at least:
+
+- manifest.json: run identity, state, versions, units, provenance, hashes.
+- config.json and portfolio.json: exact normalized simulation inputs.
+- model_parameters.json: original/effective parameters, mappings, diagnostics.
+- history CSV and metadata when calibration was used.
+- summary.json: full-precision statistics and definitions.
+- terminal_outcomes.csv: path_id, terminal_equity, loss, max_drawdown.
+- preview_paths.csv or a documented safe numeric array format, with IDs.
+- diagnostics.json and comparison links/results when actually performed.
+- COMPLETED: a final verified publication marker.
+
+Record input/config hashes and canonical numerical content separately from
+volatile creation times. Use unique run IDs without overwriting earlier runs.
+Persist enough to inspect results on another machine without original paths
+or rerunning stochastic computation. Include the full primary outcomes, not
+just summary cards or chart points.
+
+Write to a same-filesystem staging directory, flush files safely, verify
+payload schemas, counts, hashes, and summary reconciliation, then atomically
+publish. Use write-capable handles when syncing newly written files; do not
+repeat the Windows failure caused by calling fsync on a read-only handle.
+Test the failure path as well as the successful path.
+
+Failed or cancelled work must not become a successful run or contain a
+misleading COMPLETED marker. Keep useful failure diagnostics separately.
+Define the cancellation/publication commit point so races cannot publish a
+run that the UI has already declared cancelled.
+
+## 21. Reopen, export, and corruption handling
+
+Reopen from persisted numerical results without refitting or resimulating.
+Verify required files, supported schema, hashes, symbol mappings, lengths,
+finite values, and a recomputed summary from stored outcomes. Validate preview
+paths against their corresponding terminal/drawdown outcomes where applicable.
+Checksums provide integrity checking, not proof of authentic market data.
+
+Do not show corrupt or incomplete directories as completed. Do not silently
+repair or overwrite an original run during opening. Report a clear error and
+allow the user to continue using other valid runs. If numeric array formats
+are used, do not load pickled object arrays from user-supplied artifacts.
+
+Provide Open Run Folder and Export Run ZIP, with portable relative paths.
+If ZIP import/extraction is implemented, protect against path traversal and
+unexpected file expansion. A moved run folder must still reopen correctly.
+
+## 22. Worker ownership and run lifecycle
+
+One worker owns each simulation and its private mutable arrays. The main Qt
+thread owns widgets. Freeze validated inputs before starting; communicate
+through signals and immutable snapshots. Never mutate widgets from a worker
+or simulation arrays from the GUI [4].
+
+Use clear states such as EMPTY, INVALID, READY, RUNNING, CANCELLING,
+COMPLETED, CANCELLED, and FAILED. Prevent duplicate workers and stale result
+signals replacing newer runs. Starting a new run creates a new identity.
+Preserve the last completed result during an invalid new edit.
+
+Implement Run and Cancel. Check cancellation within bounded work intervals,
+not only after an entire expensive run. Progress must reflect actual work
+and distinguish primary simulation, diagnostics, and saving. Do not fake a
+timer-based percentage. Chart updates may be throttled to approximately
+10-20 Hz, with bounded transport memory and no skipped numerical computation.
+
+Do not add exchange replay speeds or manual order queues merely because
+OrderBookLab had them. Pause/resume is optional only if it preserves generator
+state and has meaningful verified semantics. It is not required for v1.
+
+## 23. Error handling and logging
+
+Expected user errors need a specific explanation and correction, with entered
+values retained. Cover missing metadata, gaps, unsupported basis, inadequate
+history/tail count, covariance failure, overflow, permissions, disk write
+failure, bad run folders, and cancellation. Avoid raw tracebacks in routine
+UI messages. Log unexpected exceptions with full diagnostics and run identity.
+
+Use local rotating logs for launch, validation, calibration, run start/finish,
+cancel, diagnostics, publication, reopening, and unexpected failures. Do not
+log huge datasets or path matrices by default. An error must not freeze the
+app, replace valid results with zeros, or produce a false success banner.
+
+## 24. QuantLab theme and desktop shell
+
+Match the established suite's professional dark desktop language:
+
+| Element | Baseline |
+| --- | --- |
+| Application background | #101722 |
+| Sidebar | #0a111c |
+| Cards | #172131 |
+| Borders | #29384f |
+| Primary blue | #427cf2 |
+| Navigation accent | #5994ff |
+| Information cyan | #64d8dd |
+| Success | #70dcc6 |
+| Error | #f69c9c |
+
+Centralize QSS, spacing, colors, icons, and typography. Use Segoe UI on Windows
+with a sensible fallback. Use proper layouts, readable tables, consistent
+formatting, keyboard focus, and accessible contrast. Color must not be the
+only indicator of risk or validation state.
+
+Brand as RiskLab / QUANTLAB - RISK. Use an original app icon, window title
+RiskLab - QuantLab, left navigation, top run context, and bottom status bar.
+Aim for 1400 x 980 with a usable minimum around 1040 x 760; support resizing
+and test compact layouts. Do not claim native Windows high-DPI verification
+from Linux offscreen screenshots.
+
+## 25. Navigation and dashboard
+
+Required views: Dashboard; Portfolio & Data; Model & Calibration; New
+Simulation; Risk Results; Paths & Outcomes; Assumptions & Audit; Run History;
+Settings / About. Combine views only if every required workflow remains clear.
+
+The empty dashboard needs Load Synthetic Demo and New Simulation actions.
+After a run, show initial equity, assets, horizon, primary paths, mean terminal
+equity, selected VaR and ES, loss probability, and a labeled drawdown quantile.
+Include run identity, source kind, model/drift mode, and diagnostic status.
+Missing results are N/A or a useful empty state, never made-up zeros.
+
+Use concise metric explanations: VaR is a loss threshold at the selected
+confidence, ES is average loss in the declared worst tail, and maximum
+drawdown is a decline from a path's running peak. Avoid implying VaR is the
+largest possible loss. A small outcomes chart and recent run list are useful.
+
+## 26. Portfolio and data view
+
+Support loading/editing a snapshot and its matching history/metadata pair.
+Display symbol, instrument type, quantity, initial price, market value, cash,
+initial equity, currency, as-of date, and the implied position weights.
+Support validated add/remove rows up to ten assets and explicit file dialogs.
+
+Show source kind, price basis, declared calendar, sessions, usable returns,
+estimation interval, and clear validation diagnostics. A user should be able
+to load the bundled demo without constructing files manually. Preserve edits
+on validation failure, and invalidate stale calibration when inputs change.
+
+## 27. Model and calibration view
+
+Show estimated and applied daily log means, daily standard deviations,
+covariance, correlation, observations, date range, rank/eigenvalue diagnostics,
+factorization, and any tiny PSD correction. Supply proper matrix labels.
+Constant assets should show undefined correlations honestly.
+
+Provide ZERO_LOG_MEAN and ESTIMATED_LOG_MEAN controls with explanations.
+Clearly distinguish calibrated data from manual hypothetical parameters.
+Display the model's independent-session and constant-covariance assumptions.
+Never hide material diagnostic warnings behind a success color.
+
+## 28. New simulation view
+
+Configure path count, session steps, seed, batch size, preview count, confidence
+levels, and the selected validated portfolio/model. Explain session steps
+versus calendar days. Display required minimum paths and resource constraints
+before Run is available. Support a new seed action without silently changing
+the seed of a pending or completed run.
+
+Provide Run, Cancel while active, progress, elapsed time, and a readable
+configuration review. Disable conflicting edits or require an explicit new
+configuration while a worker is active. A completed result must reflect the
+exact frozen inputs shown in its saved metadata.
+
+## 29. Risk results and uncertainty view
+
+Show a terminal loss histogram using all primary outcomes, VaR markers,
+ES/tail information, loss probability with SE/interval, terminal equity
+statistics, and the separate maximum-drawdown distribution/quantiles.
+Use correct money/percentage units and clearly signed losses.
+
+Explain a negative VaR as a gain threshold under the model rather than
+silently setting it to zero. Provide confidence selection only when it is
+supported by the saved sample's minimum tail size. Derived changes must not
+overwrite an immutable published summary; label them as an additional view
+or save a new analysis artifact.
+
+Include working Check Stability and Compare Scenarios actions with honest
+diagnostic status and warnings. Show replicate outcomes separately from the
+primary run. No placeholder buttons or permanently hard-coded success states.
+
+## 30. Paths and outcomes view
+
+Plot the reproducibly selected equity preview with session-step axes, initial
+equity reference, path IDs, subset size, and units. Provide per-path inspection
+of equity/drawdown. Do not confuse preview quantiles with all-path statistics.
+
+Provide a sortable/filterable outcomes table with path ID, terminal equity,
+dollar loss, percentage loss, and maximum drawdown. Numeric sort must be
+numeric. Sorting must preserve identity and not mutate model results. Support
+copy selection and export without constructing thousands of heavyweight
+widgets or freezing the app on large samples.
+
+## 31. Assumptions, audit, history, and settings
+
+The audit view must expose input/config hashes, source provenance, asset
+orders/mappings, estimated/effective parameters, seed streams, batch size,
+versions, model definitions, tail indices/counts, preview selection, numerical
+corrections, diagnostics, and saved payload status. Keep short explanations
+available so this view is useful in an interview.
+
+Run History lists created time, portfolio label/assets, horizon, primary paths,
+drift mode, seed, run ID, diagnostic status, and completion status. Provide
+refresh, open, open folder, and ZIP export; handle missing/corrupt runs.
+Reopening must work after restarting the app and relocating a folder.
+
+Settings includes a writable default run directory, display preferences,
+application/engine/schema versions, and About. Default storage should use an
+appropriate user-writable directory, not the installed executable directory
+or a transient PyInstaller bundle. Provide a selectable portable workspace.
+Explain Gaussian-model limitations, supported inputs, and simulated outcomes
+briefly. Do not imply live trading, regulatory certification, or actual forecasts.
+
+## 32. Bundled examples
+
+Ship complete, documented synthetic examples with consistent paired filenames:
+
+- Deterministic zero-covariance/zero-mean portfolio.
+- Deterministic nonzero log growth.
+- One-asset low volatility and high volatility with identical holdings.
+- Three-asset correlated portfolio with sufficient calibration history.
+- Zero-log-mean versus estimated-log-mean comparison.
+- Singular covariance/perfect positive correlation.
+- All-cash exposure.
+- Invalid covariance, missing session, duplicate symbol, nonfinite price,
+  unsupported basis/instrument, and insufficient-tail fixtures.
+
+Generated histories need declared seeds, source metadata, and full expected
+session lists. Dates need not pretend to be verified exchange history.
+Reproducibly generate examples rather than hard-coding a pretty result.
+Include at least one actual completed run generated by the implemented engine,
+with a guide for reopening it. Do not ship hand-written fake results.
+
+## 33. Exact acceptance fixtures
+
+Implement these as executable tests before claiming the model works:
+
+1. V0 = 1000 and terminal equity [800,900,1000,1100,1200]. Sorted losses are
+   [-200,-100,0,100,200]. At alpha = 0.80, k = 4, q = 1, VaR = 100,
+   ES = 200, probability of loss = 0.40. This tiny indexing fixture is not
+   eligible as a normal production tail estimate.
+2. Equity path [1000,1200,900,1100] has maximum drawdown 25%, despite
+   ending with a 10% gain. Include initial equity in peak calculations.
+3. Zero covariance and zero log mean preserve every price and equity.
+4. Zero covariance and mean m give price S0 times exp(steps times m).
+5. Equal initial prices and identical perfectly correlated log increments
+   give identical percentage changes along every path.
+6. Reorder holdings, history columns, means, covariance rows/columns, and
+   labels consistently. Same-seed canonical simulation leaves portfolio
+   outcomes unchanged within the documented tolerance.
+7. Covariance [[1,2],[2,1]] is indefinite and is rejected before sampling;
+   a singular PSD matrix is accepted. Add fixtures at realistic daily scales.
+8. Same inputs, seed, versions, algorithm, and batch size reproduce the
+   numerical arrays and canonical summary in the pinned environment.
+9. For N = 10000 and alpha = 0.99, q = 100 exactly; not 101.
+10. Cash plus fixed position values reconciles at every stored step and
+    terminal value, including fractional holdings and zero exposures.
+
+## 34. Independent reference and statistical checks
+
+Create a deliberately small scalar reference simulator that consumes supplied
+fixed shock arrays. Compare production and reference prices, equity, running
+peaks, terminal loss, and maximum drawdown step by step. Exercise multiple
+batches, incomplete final batches, assets, quantities, and covariance ranks.
+Do not implement the reference by calling the same production helpers for
+everything being verified.
+
+Statistical tests should compare generated log means and covariance with the
+requested model using declared sample sizes and tolerances linked to sampling
+error. Use controlled seeds and avoid fragile assertions that every random
+sample equals its population parameters. Check singular dependence explicitly.
+
+For a one-asset lognormal model, independently check terminal log mean/variance
+and mean price S0 times exp(steps times (m + variance/2)), within sampling
+tolerance. This catches accidental extra half-variance subtraction and daily
+versus annual scaling errors. Separate statistical evidence from exact
+deterministic fixtures and disclose statistical test limitations.
+
+## 35. Required engine and persistence tests
+
+Use pytest and meaningful deterministic fixtures, plus statistical/reference
+layers. Include:
+
+- Strict portfolio, history, dates, metadata, and scalar-type validation.
+- No forward filling, missing sessions, or post-snapshot calibration leakage.
+- Correct one-asset covariance shape, sample denominator, and centering.
+- Duplicate symbols/keys and label/matrix mismatch handling.
+- PSD boundaries, symmetry, numerical correction records, and zero variance.
+- Correct correlated-factor orientation and independent time steps.
+- Permutation behavior, fixed holdings, cash, and fractional quantities.
+- Tiny-tail indexing, ties, all gains, all losses, and p = 0/1.
+- Drawdown per path, including the first-step decline from V0.
+- Repeatability under the recorded contract and independent RNG streams.
+- Preview selection and chart settings leaving all-path results unchanged.
+- Tail sufficiency, uncertainty diagnostics, and unstable-seed warnings.
+- Cancellation, overflow, invalid configuration, and incomplete batches.
+- Save/reopen without simulation, portable folders, missing/corrupt payloads.
+- Summary reconciliation, failed writes, writable fsync handles, and cleanup.
+- A failed/cancelled run never acquiring a valid completed publication.
+- Comparative scenarios preserving declared constants and identities.
+
+Assert financial/numerical behavior, not only implementation structure. Do
+not inflate test counts with assertions that simply mirror the same formula
+without an independent fixture or reason.
+
+## 36. UI verification
+
+Use pytest-qt or an equivalent meaningful Qt workflow harness. Verify launch,
+all navigation, demo loading, input edits, calibration, presets, and Run/Cancel.
+Confirm numeric card/table values against engine outputs, not screenshots
+alone. Test invalid inputs, preserved edits, insufficient tail warnings,
+worker duplication prevention, error recovery, and stale-signal handling.
+
+Verify preview identity, numeric sorting, stability diagnostics, comparisons,
+history opening, moved runs, corrupt-run errors, restart, and exports. Prove
+the event loop remains usable during a sufficiently long run. Do not accept
+unit tests alone or mere window launch as application completion.
+
+## 37. Core-first milestone order
+
+Follow the design's sequence, with evidence before moving forward:
+
+1. Fixed-path valuation and risk measures: hand fixtures, reconciliation,
+   loss indexing, and per-path drawdown.
+2. One-asset generator: zero volatility, deterministic growth, repeatability,
+   and lognormal diagnostic.
+3. Correlated multi-asset generator: PSD/singular cases, factor orientation,
+   covariance checks, and canonical asset alignment.
+4. Historical estimation: strict complete-session validation, sample covariance,
+   drift modes, provenance, and model diagnostics.
+5. Batched execution and report: independent reference comparison, measured
+   memory/runtime, cancellation, preview selection, and saved outputs.
+6. Desktop integration: shared shell, configuration, calibration, risk results,
+   paths, audit, comparisons, history, and settings.
+7. Release verification: uncertainty checks, UI tests, visual polish, actual
+   screenshots, packaging, documentation, source archive, and restart tests.
+
+The extra desktop/release stages expand product delivery; they do not replace
+the five engine milestones or change their mathematics. Test, fix, update
+STATUS.md, and continue. Do not stop after a pretty shell.
+
+## 38. Performance targets and measurement
+
+Design target: 10,000 paths, 10 assets, 252 future steps within 15 seconds
+and 300 MB peak memory on a documented machine. It is UNMEASURED until run.
+For context, the full float64 asset-price tensor alone would have 202.4 MB
+of values; avoid allocating it as the default architecture.
+
+Benchmark the primary headless engine separately from input parsing,
+calibration, bootstrap/replicate diagnostics, disk persistence, GUI rendering,
+and packaging startup. Also measure a realistic complete desktop workflow;
+do not imply the engine budget covers excluded phases.
+
+Record path/step/asset counts, batch/preview sizes, seed, Python and dependency
+versions, OS, CPU, BLAS/thread configuration, elapsed wall time, process peak
+RSS with units, and measurement method. Python allocation tracing alone does
+not establish total NumPy/native process memory. Keep machine-readable results
+in docs/benchmark.json and describe the host accurately.
+
+Profile missed targets before optimizing. Consider matrix operations, repeated
+factorization, temporary arrays, bootstrap work, plotting, and serialization.
+Preserve reference agreement and reproducibility after optimization. Do not
+invent a performance result for the user's Windows laptop.
+
+## 39. Environment and Windows source experience
+
+Create a reproducible environment with tested pinned runtime dependencies and
+separate development/test dependencies where practical. Use the same verified
+versions for packaging. Do not pin an untested latest release merely because
+it is available. Record the supported Python/platform matrix honestly.
+
+Provide a complete source ZIP the user can extract to an ordinary Windows
+folder, including paths with spaces and a OneDrive Desktop. Document:
+
+1. Install the specified Python with the Windows py launcher if needed.
+2. Double-click Setup_Windows.cmd once to create the local .venv and install.
+3. Double-click Launch_RiskLab.cmd to open the GUI.
+4. Load the synthetic demo, inspect calibration, and run a simulation.
+
+Scripts must anchor to their own directory, quote paths, use the project
+interpreter explicitly, report missing setup clearly, and retain readable
+setup/build errors. Avoid requiring PowerShell execution-policy changes just
+to launch. Use pythonw for a normal console-free GUI and document a debug
+launch using python.exe. Provide exact commands including:
+
+```powershell
+py -3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pytest
+.\.venv\Scripts\python.exe -m risklab
+```
+
+Adjust installation commands to match the actual dependency files. No Linux,
+WSL, bash, make, or chmod should be necessary for ordinary Windows use.
+
+## 40. Packaging and smoke testing
+
+Maintain RiskLab.spec and Build_Windows.cmd using PyInstaller unless a tested
+reason justifies otherwise. Prefer a reliable one-folder distribution.
+Expected Windows output: dist/RiskLab/RiskLab.exe, launched by double-click.
+Bundle themes, icons, required Qt plugins, and example resources correctly.
+
+Gate release builds on required tests. Verify a packaged cold start, theme,
+sample access, actual simulation, result display, saving, close/restart, and
+saved-run reopening. Check installed/bundled paths and a writable user run
+directory rather than assuming the working directory is the project root.
+
+PyInstaller output is platform-specific [5]. A Linux build does not create or
+verify a Windows executable. If only Linux is available, perform useful native
+and offscreen checks, include reproducible Windows build configuration, and
+mark Windows build/runtime/high-DPI checks UNVERIFIED IN CURRENT ENVIRONMENT.
+Do not include a Linux binary renamed .exe or imply the source ZIP contains
+a Windows executable when it does not.
+
+## 41. Real screenshots and visual polish
+
+Capture actual running Qt screens after the engine and workflow work. Suggested
+evidence: empty dashboard; loaded portfolio/history; model diagnostics; ready
+simulation; risk results; paths/outcomes; uncertainty comparison; audit; run
+history; settings; validation failure; compact results layout.
+
+Do not generate fake screenshots or present UI mockups as application output.
+Identify offscreen captures as such. README should lead with the strongest
+real Risk Results screenshot and explain synthetic inputs and simulated paths.
+
+Review every view at default and compact size for clipped text, unreadable
+axes, missing units, overcrowded legends, poor table widths, overflow,
+alignment, contrast, inconsistent money/percentage formatting, keyboard focus,
+empty/error states, spelling, debug remnants, and nonfunctional controls.
+Fix defects and repeat relevant checks after changes.
+
+## 42. Documentation and explainability
+
+Provide ARCHITECTURE.md, DATA_FORMAT.md, MODEL_ASSUMPTIONS.md, RISK_METRICS.md,
+REPRODUCIBILITY.md, TESTING.md, DEMO.md, PACKAGING.md, ENGINEERING_REPORT.md,
+and useful machine-readable evidence. Preserve one original RiskLab design
+and this prompt in docs/source/ with their status/history intact.
+
+README and START_HERE must explain what RiskLab does, how to start it on
+Windows, the first demo, supported inputs, run outputs, limitations, and exact
+verification status. Distinguish simulation, calibration history, and actual
+observed market data. Include a 60-90 second demonstration script.
+
+The owner should be able to explain: why log returns; sample covariance and
+PSD; singular factorization; symbol alignment; drift sensitivity; zero log
+mean versus arithmetic expectation; VaR versus ES; loss versus drawdown;
+sampling error versus model risk; batching; RNG contracts; GUI ownership;
+saved results versus resimulation; and honest platform verification.
+
+STATUS.md lists verified work, failing/unverified work, test/benchmark commands,
+and the exact next task. DECISIONS.md records thresholds, defaults, covariance
+tolerances, quantile conventions, uncertainty methods, RNG mapping, batching,
+persistence, and deviations. BACKLOG.md separates defects, release blockers,
+and future extensions; it must not conceal unfinished v1 requirements.
+
+## 43. Git and deliverable hygiene
+
+Create meaningful local commits as milestones pass, preserving existing user
+work. Before initializing, verify that the repository root is the actual
+RiskLab project directory, not a parent user-home folder. Never stage unrelated
+home files. Do not push or publish externally without an authorized destination.
+
+Exclude .venv, caches, logs, personal data, generated build/dist directories,
+and ordinary local run output. Deliberately included small completed examples
+are allowed. Create a verified source archive without packaging environments
+or nested unrelated projects. If distributing history without .git, include
+RiskLab_History.bundle and clear restoration instructions. Do not recursively
+commit the history bundle into its own history; provide appropriate exclusions.
+
+Final artifacts should include RiskLab_Source_Package.zip, an engineering
+report in Markdown and a visually verified PDF when PDF authoring is available,
+real screenshots, actual test/benchmark evidence, and an optional separate
+history bundle/checksum file. Use the environment's supported durable artifact
+saving workflow when available and provide working download links. Never
+claim a remote push, durable save, or artifact exists unless it succeeded.
+
+## 44. Interruption recovery
+
+Do not restart from scratch after context limits, tool limits, or restarts.
+Save code and useful evidence, run appropriate checks when possible, and
+update STATUS.md, DECISIONS.md, and BACKLOG.md with exact next steps. On
+continuation read those files and inspect existing work before editing.
+Recover verified artifacts and resume at the first unresolved task.
+
+## 45. End-to-end acceptance and definition of done
+
+Exercise this actual workflow before declaring completion:
+
+1. Start clean; launch and navigate the desktop.
+2. Load the bundled synthetic correlated portfolio and its full metadata.
+3. Inspect correct holdings, dates, log means, covariance, and diagnostics.
+4. Select zero log mean, 10,000 paths, 252 steps, recorded seed/batch size,
+   and 95%/99% confidence; validate the configuration.
+5. Run while the interface remains responsive.
+6. Reconcile results with engine outputs and complete primary outcomes.
+7. Inspect preview identities, loss distribution, VaR/ES, and path drawdown.
+8. Run stability diagnostics and a comparable drift/volatility scenario.
+9. Save and export; close and restart; reopen without refitting/resimulating.
+10. Move a run folder and reopen it successfully.
+11. Try invalid covariance/history and insufficient tail size; recover cleanly.
+12. Cancel a sufficiently long run and verify no complete result is published.
+13. Corrupt a copied payload and verify opening is rejected safely.
+14. Build and repeat a basic packaged workflow wherever the platform permits.
+15. Inspect actual screenshots and compact layouts; fix remaining defects.
+
+Done requires source-design engine behavior, all exact fixtures, reference and
+statistical evidence, correct validation, all-path statistics, sampling
+diagnostics, safe persistence/reopening, integrated desktop workflows, tests,
+docs, real screenshot review, measured performance, usable Windows scripts,
+and honest packaging status. Any unavailable platform check remains explicitly
+unverified; do not silently convert it into a pass.
+
+## 46. Final engineering report
+
+Lead with what works and how the owner can launch it. Include repository tree,
+architecture, implemented model/UI status, exact acceptance and full-suite
+results with counts/failures/skips, reference/statistical methods, measured
+performance and host, source launch/setup/build commands, executable location
+only if actually built, saved-run/reopen evidence, demo instructions, real
+screenshot paths, limitations, decisions/deviations, and all unverified work.
+
+Keep evidence separate from aspirations. Recommend a short v1.1 backlog only
+after the achievable v1 is complete. Do not bury unresolved requirements in
+a promotional summary.
+
+## 47. Begin now
+
+Read the complete design, inspect existing RiskLab work and available suite
+references, and summarize the interpretation in at most 15 concise bullets.
+Resolve ordinary choices as specified above. Create or update the repository,
+environment, status/decision/backlog files, and tests. Begin fixed-path
+valuation and risk fixtures immediately. Test, fix, and continue through
+calibration, batching, persistence, the integrated desktop, visual polish,
+benchmarks, documentation, packaging, and end-to-end verification.
+
+Do not stop after planning. Do not build a fake UI. Do not fabricate results.
+Do not substitute BacktestLab or OrderBookLab semantics for RiskLab's model.
+Build an independent, explainable, tested QuantLab risk research application.
+
+---
+
+## Primary technical references
+
+The source design supplies the model and risk definitions; these references
+support implementation details. Verify against the actual pinned versions.
+
+1. NumPy, Generator.multivariate_normal: covariance requirements and available
+   factorization methods. https://numpy.org/doc/stable/reference/random/generated/numpy.random.Generator.multivariate_normal.html
+2. NumPy, random compatibility policy: environment, call shape, and version
+   constraints on stream repeatability. https://numpy.org/doc/stable/reference/random/compatibility.html
+3. NumPy, cov: row/column orientation and n - 1 normalization.
+   https://numpy.org/doc/stable/reference/generated/numpy.cov.html
+4. Qt for Python, QThread: thread ownership and worker communication.
+   https://doc.qt.io/qtforpython-6/PySide6/QtCore/QThread.html
+5. PyInstaller, operating mode: platform-specific bundles and one-folder
+   distributions. https://pyinstaller.org/en/stable/operating-mode.html
