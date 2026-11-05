@@ -4,3 +4,11 @@ build/
 dist/
 runs/
 *.bundle
+.pytest_cache/
+*.egg-info/
+*.log
+docs/source_smoke/runs/
+docs/source_smoke/workspace/
+docs/packaging_smoke/runs/
+docs/packaging_smoke/workspace/
+docs/*_smoke/restart/workspace/

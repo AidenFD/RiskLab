@@ -1,0 +1,49 @@
+{
+  "version": "1.0.0",
+  "source_design_sha256": "fad8e491ef31de48dad100751fe0939d03a1858dc6bfaba86ef4c3277aaf390c",
+  "tests": {
+    "tests": 102,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "engine_milestones": [
+    {
+      "stage": 1,
+      "implemented_and_verified": true
+    },
+    {
+      "stage": 2,
+      "implemented_and_verified": true
+    },
+    {
+      "stage": 3,
+      "implemented_and_verified": true
+    },
+    {
+      "stage": 4,
+      "implemented_and_verified": true
+    },
+    {
+      "stage": 5,
+      "implemented_and_verified": true
+    }
+  ],
+  "desktop_views": 9,
+  "source_cold_start_and_restart": true,
+  "native_linux_package_cold_start_and_restart": true,
+  "included_example": "examples/completed_runs/26bd873d8084443ba5b622db11ec1260",
+  "example_paths": 10000,
+  "unverified": [
+    "Native Windows build/runtime/high-DPI",
+    "Native Linux display interaction"
+  ],
+  "remote_created_or_pushed": false,
+  "versions": {
+    "numpy": "2.5.4",
+    "PySide6": "6.12.0",
+    "pyqtgraph": "0.14.0",
+    "pytest": "9.2.0",
+    "PyInstaller": "6.22.3"
+  }
+}

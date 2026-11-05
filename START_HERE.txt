@@ -1,0 +1,26 @@
+RiskLab v1.0.0 - QuantLab / Risk
+Aiden Federico-Dyer
+
+START ON WINDOWS
+1. Extract the entire ZIP. Keep its folders together.
+2. Install Python 3.12 with the Windows py launcher if necessary.
+3. Double-click Setup_Windows.cmd once.
+4. Double-click Launch_RiskLab.cmd.
+5. Dashboard > Load synthetic demo.
+6. New Simulation > Run simulation.
+7. Risk Results > Check stability, then Compare drift / volatility.
+8. Save run; reopen it later from Run History.
+
+No Windows executable is included in the source ZIP.
+Build_Windows.cmd builds one on Windows after running tests and packaged smoke checks.
+Expected result: dist\RiskLab\RiskLab.exe (keep the entire folder).
+Windows build/runtime/high-DPI behavior has not been verified on the Linux host.
+
+For a diagnostic console from the project folder:
+.venv\Scripts\python.exe -m risklab
+Logs and the default run directory are under the user's local QuantLab/RiskLab workspace.
+You can choose another writable run directory in Settings / About.
+
+The bundled price histories are SYNTHETIC, not real SPY or exchange history.
+Future paths are SIMULATED under a Gaussian log-return model, not predictions.
+See README.md and docs/DEMO.md for details.

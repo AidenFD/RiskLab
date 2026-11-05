@@ -1,0 +1,27 @@
+{
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor",
+  "python": "3.12.14",
+  "numpy": "2.5.4",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.39",
+  "processor": "x86_64",
+  "cpu_count": 9,
+  "phase": "headless simulation including validation/factorization/summary; excludes Qt, input file parsing, diagnostics and publication",
+  "paths": 10000,
+  "steps": 252,
+  "assets": 10,
+  "batch_size": 512,
+  "preview_count": 20,
+  "seed": 42,
+  "wall_seconds": 0.5896360909999885,
+  "peak_rss_mib": 32.03125,
+  "memory_method": "OS process peak RSS",
+  "thread_settings": {
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": null,
+    "MKL_NUM_THREADS": null
+  },
+  "numpy_build": "{'Compilers': {'c': {'name': 'gcc', 'linker': 'ld.bfd', 'version': '14.2.1', 'commands': 'cc'}, 'cython': {'name': 'cython', 'linker': 'cython', 'version': '3.3.0', 'commands': 'cython'}, 'c++': {'name': 'gcc', 'linker': 'ld.bfd', 'version': '14.2.1', 'commands': 'c++'}}, 'Machine Information': {'host': {'cpu': 'x86_64', 'family': 'x86_64', 'endian': 'little', 'system': 'linux'}, 'build': {'cpu': 'x86_64', 'family': 'x86_64', 'endian': 'little', 'system': 'linux'}}, 'Build Dependencies': {'blas': {'name': 'scipy-openblas', 'found': True, 'version': '0.3.34.106.0', 'detection method': 'pkgconfig', 'include directory': '/opt/_internal/cpython-3.12.13/lib/python3.12/site-packages/scipy_openblas64/include', 'lib directory': '/opt/_internal/cpython-3.12.13/lib/python3.12/site-packages/scipy_openblas64/lib', 'openblas configuration': 'OpenBLAS 0.3.34.106.0  USE64BITINT DYNAMIC_ARCH NO_AFFINITY SkylakeX MAX_THREADS=64', 'pc file directory': '/project/.openblas'}, 'lapack': {'name': 'scipy-openblas', 'found': True, 'version': '0.3.34.106.0', 'detection method': 'pkgconfig', 'include directory': '/opt/_internal/cpython-3.12.13/lib/python3.12/site-packages/scipy_openblas64/include', 'lib directory': '/opt/_internal/cpython-3.12.13/lib/python3.12/site-packages/scipy_openblas64/lib', 'openblas configuration': 'OpenBLAS 0.3.34.106.0  USE64BITINT DYNAMIC_ARCH NO_AFFINITY SkylakeX MAX_THREADS=64', 'pc file directory': '/project/.openblas'}}, 'Python Information': {'path': '/tmp/build-env-ptu49_tp/bin/python', 'version': '3.12'}, 'SIMD Extensions': {'baseline': ['X86_V2'], 'found': ['X86_V3', 'X86_V4', 'AVX512_ICL'], 'not found': ['AVX512_SPR']}}",
+  "target_seconds": 15,
+  "target_peak_decimal_mb": 300,
+  "target_met_on_this_host": true
+}

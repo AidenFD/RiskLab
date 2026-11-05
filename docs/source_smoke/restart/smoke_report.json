@@ -1,0 +1,62 @@
+{
+  "mode": "reopen",
+  "screenshots": [
+    "reopened_results.png"
+  ],
+  "platform": "linux",
+  "capture": "actual Qt widgets; platform plugin offscreen",
+  "run_folder": "/workspace/scratch/3244723990fe/RiskLab/docs/source_smoke/runs/26bd873d8084443ba5b622db11ec1260",
+  "reopened_summary": {
+    "initial_equity": 41987.621577104816,
+    "n_paths": 10000,
+    "probability_of_loss": 0.4776,
+    "probability_se": 0.004994979879839358,
+    "probability_wilson_95": [
+      0.4678204969648807,
+      0.4873967061621255
+    ],
+    "mean_terminal_equity": 42627.320655900134,
+    "median_terminal_equity": 42237.68543985959,
+    "terminal_quantiles": {
+      "0.01": 33183.902272661595,
+      "0.05": 35357.32770704981,
+      "0.5": 42237.68543985959,
+      "0.95": 51094.4847755868,
+      "0.99": 55413.55935666653
+    },
+    "loss_mean": -639.6990787953165,
+    "tails": {
+      "0.95": {
+        "var": 6629.988278006509,
+        "es": 7976.787004284287,
+        "var_fraction": 0.15790340174023423,
+        "es_fraction": 0.18997949168508993,
+        "rank": 9500,
+        "tail_count": 500,
+        "tail_sufficient": true
+      },
+      "0.99": {
+        "var": 8803.706010031223,
+        "es": 9777.054640378823,
+        "var_fraction": 0.20967384384620025,
+        "es_fraction": 0.23285564347636437,
+        "rank": 9900,
+        "tail_count": 100,
+        "tail_sufficient": true
+      }
+    },
+    "drawdown_quantile_method": "linear",
+    "drawdown_quantiles": {
+      "0.5": 0.11075336669756033,
+      "0.95": 0.2059350697225342,
+      "0.99": 0.24647140013688512
+    },
+    "loss_convention": "initial_equity - terminal_equity; gains are negative",
+    "var_convention": "ascending loss at one-based ceil(alpha*N)",
+    "es_convention": "mean of largest ceil((1-alpha)*N) losses; no zero floor",
+    "stability": "NOT ASSESSED"
+  },
+  "elapsed_seconds": 0.6905779639999992,
+  "success": true,
+  "peak_rss_mib": 130.54296875
+}

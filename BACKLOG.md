@@ -1,6 +1,23 @@
-# RiskLab development checkpoint
-The supplied design is byte-identical to the original SHA-256 fad8e491ef31de48dad100751fe0939d03a1858dc6bfaba86ef4c3277aaf390c.
-Implemented foundation: valuation, risk summary, PSD factorization, canonical asset ordering, batched simulation, strict history calibration function, basic atomic saved runs, and working PySide6 development interface.
-14 foundation unittest cases passed. A 10,000-path, 252-step actual simulation rendered in Qt offscreen and saved/reopened with equal outcomes. This is NOT full release acceptance.
-Next: broaden independent reference/statistical and persistence tests; integrate historical import into GUI; implement bootstrap/replicate stability diagnostics, comparisons, full outcomes table, run listing, and audit metadata. Then benchmark, packaging, screenshots, and final verification.
-Windows native runtime is UNVERIFIED. No executable supplied. UI and persistence are development implementations; some save/plot work currently occurs on GUI thread and needs worker integration. Calibration strict duplicate-JSON-key handling remains unfinished. Test nonfinite input rejection and overflow translation consistently before release.
+# Backlog - v1.0.0
+
+## Platform checks requiring their target environment
+
+- Build and run the Windows executable natively; manually check double-click,
+  fonts, file dialogs, path handling and high-DPI behavior on Windows 10/11.
+- Manually check a native X11/Wayland desktop. Current Linux verification used
+  actual Qt widgets with the offscreen platform, not a physical desktop session.
+
+These are disclosed verification boundaries, not fabricated passes. The source
+release and native Linux packaged workflow are complete in the available host.
+
+## Future versions (not promised by v1)
+
+- A properly specified total-return index valuation mode or actual corporate-action
+  processing; do not silently treat adjusted indices as tradable share prices.
+- Block bootstrap, jumps, volatility clustering, changing covariance and model
+  sensitivity beyond the explicitly implemented Gaussian baseline.
+- Named deterministic shocks without invented scenario probabilities.
+- OptionsLab integration with actual scenario revaluation and contract multipliers.
+- Parameter-estimation uncertainty methods distinct from Monte Carlo sampling.
+- Additional large-run performance profiling and an optimized virtual sort path
+  if maximum-size desktop tables are a material bottleneck in actual use.
