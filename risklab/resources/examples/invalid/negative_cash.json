@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "name": "Perfectly correlated assets",
+  "portfolio": {
+    "currency": "USD",
+    "as_of_session": "2023-11-27",
+    "cash": "-1",
+    "positions": [
+      {
+        "symbol": "SYN-A",
+        "instrument_type": "EQUITY",
+        "quantity": "100",
+        "initial_price": "100"
+      },
+      {
+        "symbol": "SYN-B",
+        "instrument_type": "EQUITY",
+        "quantity": "100",
+        "initial_price": "100"
+      }
+    ]
+  },
+  "model": {
+    "kind": "MANUAL",
+    "symbols": [
+      "SYN-A",
+      "SYN-B"
+    ],
+    "daily_log_mean": [
+      0,
+      0
+    ],
+    "daily_log_cov": [
+      [
+        0.0001,
+        0.0001
+      ],
+      [
+        0.0001,
+        0.0001
+      ]
+    ]
+  }
+}

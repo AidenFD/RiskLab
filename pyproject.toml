@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "quantlab-risklab"
+version = "1.0.0"
+description = "Auditable fixed-holdings Monte Carlo portfolio risk desktop application"
+requires-python = ">=3.12"
+authors = [{name = "Aiden Federico-Dyer"}]
+dependencies = ["numpy==2.5.4", "PySide6==6.12.0", "pyqtgraph==0.14.0", "colorama==0.4.6"]
+
+[project.scripts]
+risklab = "risklab.ui.application:main"
+risklab-cli = "risklab.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["risklab*"]
+
+[tool.setuptools.package-data]
+risklab = ["resources/*.svg", "resources/examples/*", "resources/examples/invalid/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+qt_api = "pyside6"
